@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DRF Authentication</title>
+</head>
+<body>
+    <h1>User Authentication</h1>
+
+    <!-- Registration Form -->
+    <div>
+        <h2>Register</h2>
+        <form id="register-form">
+            <input type="text" id="reg-username" placeholder="Username" required />
+            <input type="email" id="reg-email" placeholder="Email" required />
+            <input type="password" id="reg-password" placeholder="Password" required />
+            <button type="submit">Register</button>
+        </form>
+        <p id="register-result"></p>
+    </div>
+
+    <!-- Login Form -->
+    <div>
+        <h2>Login</h2>
+        <form id="login-form">
+            <input type="text" id="login-username" placeholder="Username" required />
+            <input type="password" id="login-password" placeholder="Password" required />
+            <button type="submit">Login</button>
+        </form>
+        <p id="login-result"></p>
+    </div>
+
+    <!-- User Profile -->
+    <div>
+        <h2>User Profile</h2>
+        <button id="get-profile">View Profile</button>
+        <p id="profile-result"></p>
+    </div>
+
+    <script>
+        const baseURL = 'http://127.0.0.1:8000/api/users'; // Replace with your API's base URL
+        let accessToken = ''; // Store the access token
+
+        // Register User
+        document.getElementById('register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('reg-username').value;
+            const password = document.getElementById('reg-password').value;
+
+            const response = await fetch(`${baseURL}/register/`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password }),
+            });
+
+            const result = await response.json();
+            document.getElementById('register-result').textContent = response.ok
+                ? `User registered successfully!`
+                : `Error: ${JSON.stringify(result)}`;
+        });
+
+        // Login User
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+
+            const response = await fetch(`${baseURL}/login/`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password }),
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                accessToken = result.access;
+                document.getElementById('login-result').textContent = `Login successful!`;
+            } else {
+                document.getElementById('login-result').textContent = `Error: ${JSON.stringify(result)}`;
+            }
+        });
+
+        // Get User Profile
+        document.getElementById('get-profile').addEventListener('click', async () => {
+            if (!accessToken) {
+                document.getElementById('profile-result').textContent = 'Please log in first!';
+                return;
+            }
+
+            const response = await fetch(`${baseURL}/profile/`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessToken}`,
+                },
+            });
+
+            const result = await response.json();
+            document.getElementById('profile-result').textContent = response.ok
+                ? `Profile: ${JSON.stringify(result)}`
+                : `Error: ${JSON.stringify(result)}`;
+        });
+    </script>
+</body>
+</html>

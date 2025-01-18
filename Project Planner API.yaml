@@ -1,0 +1,6704 @@
+openapi: 3.0.3
+info:
+  title: Project Planner API
+  version: 1.0.0
+  description: API documentation for Project Planner.
+paths:
+  /api/v1/admins/action-logs/:
+    get:
+      operationId: admins_action_logs_list
+      description: List admin action logs with filtering and searching options.
+      parameters:
+      - in: query
+        name: action
+        schema:
+          type: string
+      - in: query
+        name: content_type
+        schema:
+          type: integer
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - in: query
+        name: user
+        schema:
+          type: integer
+      tags:
+      - admins
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: List of admin action logs
+  /api/v1/admins/action-logs/{id}/:
+    get:
+      operationId: admins_action_logs_retrieve
+      description: ViewSet for viewing admin action logs with filtering and searching
+        options.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this admin action log.
+        required: true
+      tags:
+      - admins
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminActionLog'
+          description: ''
+  /api/v1/admins/analytics/project_stats/:
+    get:
+      operationId: admins_analytics_project_stats_retrieve
+      description: Get statistics on projects including total count and count by status.
+      tags:
+      - admins
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: Project statistics
+  /api/v1/admins/analytics/subscription_stats/:
+    get:
+      operationId: admins_analytics_subscription_stats_retrieve
+      description: Get statistics on subscriptions, including total, active subscriptions,
+        revenue, and subscriptions by plan.
+      tags:
+      - admins
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: Subscription statistics
+  /api/v1/admins/analytics/task_stats/:
+    get:
+      operationId: admins_analytics_task_stats_retrieve
+      description: Get statistics on tasks including total count and count by status.
+      tags:
+      - admins
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: Task statistics
+  /api/v1/admins/analytics/user_activity/:
+    get:
+      operationId: admins_analytics_user_activity_retrieve
+      description: Get statistics on user activity (active users and new users) from
+        the last 30 days.
+      tags:
+      - admins
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: User activity statistics
+  /api/v1/admins/comments/:
+    get:
+      operationId: admins_comments_list
+      description: List all comments (excluding replies). The results are filtered
+        by task, project, author, and parent. Supports searching and ordering.
+      parameters:
+      - in: query
+        name: author
+        schema:
+          type: integer
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - in: query
+        name: parent
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: task
+        schema:
+          type: integer
+      - in: query
+        name: task__project
+        schema:
+          type: integer
+      tags:
+      - admins
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAdminCommentListList'
+          description: ''
+    post:
+      operationId: admins_comments_create
+      tags:
+      - admins
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminCommentCreateUpdate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AdminCommentCreateUpdate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AdminCommentCreateUpdate'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminCommentCreateUpdate'
+          description: ''
+  /api/v1/admins/comments/{id}/:
+    get:
+      operationId: admins_comments_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this comment.
+        required: true
+      tags:
+      - admins
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminCommentDetail'
+          description: ''
+    put:
+      operationId: admins_comments_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this comment.
+        required: true
+      tags:
+      - admins
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminCommentCreateUpdate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AdminCommentCreateUpdate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AdminCommentCreateUpdate'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminCommentCreateUpdate'
+          description: ''
+    patch:
+      operationId: admins_comments_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this comment.
+        required: true
+      tags:
+      - admins
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAdminCommentCreateUpdate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedAdminCommentCreateUpdate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedAdminCommentCreateUpdate'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminCommentCreateUpdate'
+          description: ''
+    delete:
+      operationId: admins_comments_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this comment.
+        required: true
+      tags:
+      - admins
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/admins/comments/{id}/replies/:
+    get:
+      operationId: admins_comments_replies_retrieve
+      description: Get replies for a specific comment. The replies are returned in
+        descending order of creation date.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this comment.
+        required: true
+      tags:
+      - admins
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminCommentList'
+          description: ''
+  /api/v1/admins/comments/bulk_delete/:
+    delete:
+      operationId: admins_comments_bulk_delete_destroy
+      description: Bulk delete comments by a list of comment IDs. The comments are
+        permanently deleted.
+      tags:
+      - admins
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: Success status of the bulk delete operation
+  /api/v1/admins/notifications/:
+    get:
+      operationId: admins_notifications_list
+      description: List all notifications with filtering, searching, and ordering.
+      parameters:
+      - in: query
+        name: created_at__gte
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: created_at__lte
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: is_read
+        schema:
+          type: boolean
+      - in: query
+        name: notification_type
+        schema:
+          type: string
+          enum:
+          - account
+          - comment
+          - project
+          - subscription
+          - task
+        description: |-
+          Category of notification (e.g., task, project)
+
+          * `account` - Account Notifications
+          * `project` - Project Notifications
+          * `task` - Task Notifications
+          * `comment` - Comment Mentions
+          * `subscription` - Subscription Updates
+      - in: query
+        name: notification_type__in
+        schema:
+          type: array
+          items:
+            type: string
+        description: Multiple values may be separated by commas.
+        explode: false
+        style: form
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - in: query
+        name: priority
+        schema:
+          type: string
+          enum:
+          - high
+          - low
+          - medium
+        description: |-
+          Priority of the notification
+
+          * `low` - Low
+          * `medium` - Medium
+          * `high` - High
+      - in: query
+        name: priority__in
+        schema:
+          type: array
+          items:
+            type: string
+        description: Multiple values may be separated by commas.
+        explode: false
+        style: form
+      - in: query
+        name: recipient
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - delivered
+          - failed
+          - pending
+        description: |-
+          Delivery status of the notification
+
+          * `pending` - Pending
+          * `delivered` - Delivered
+          * `failed` - Failed
+      - in: query
+        name: status__in
+        schema:
+          type: array
+          items:
+            type: string
+        description: Multiple values may be separated by commas.
+        explode: false
+        style: form
+      tags:
+      - admins
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: List of notifications
+    post:
+      operationId: admins_notifications_create
+      description: |-
+        ViewSet for managing notifications with admin privileges.
+        Handles actions like sending, deleting, and viewing stats.
+      tags:
+      - admins
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationAdmin'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/NotificationAdmin'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/NotificationAdmin'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationAdmin'
+          description: ''
+  /api/v1/admins/notifications/{id}/:
+    get:
+      operationId: admins_notifications_retrieve
+      description: Retrieve detailed information about a notification.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this notification.
+        required: true
+      tags:
+      - admins
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: Notification details
+    put:
+      operationId: admins_notifications_update
+      description: |-
+        ViewSet for managing notifications with admin privileges.
+        Handles actions like sending, deleting, and viewing stats.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this notification.
+        required: true
+      tags:
+      - admins
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationAdmin'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/NotificationAdmin'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/NotificationAdmin'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationAdmin'
+          description: ''
+    patch:
+      operationId: admins_notifications_partial_update
+      description: |-
+        ViewSet for managing notifications with admin privileges.
+        Handles actions like sending, deleting, and viewing stats.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this notification.
+        required: true
+      tags:
+      - admins
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedNotificationAdmin'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedNotificationAdmin'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedNotificationAdmin'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationAdmin'
+          description: ''
+    delete:
+      operationId: admins_notifications_destroy
+      description: |-
+        ViewSet for managing notifications with admin privileges.
+        Handles actions like sending, deleting, and viewing stats.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this notification.
+        required: true
+      tags:
+      - admins
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/admins/notifications/{id}/resend/:
+    post:
+      operationId: admins_notifications_resend_create
+      description: Resend a specific notification.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this notification.
+        required: true
+      tags:
+      - admins
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationAdmin'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/NotificationAdmin'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/NotificationAdmin'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: Notification resent successfully
+        '400':
+          description: Failed to resend notification
+  /api/v1/admins/notifications/bulk_delete/:
+    post:
+      operationId: admins_notifications_bulk_delete_create
+      description: Delete notifications in bulk.
+      tags:
+      - admins
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: {}
+              description: Unspecified request body
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: {}
+              description: Unspecified request body
+          multipart/form-data:
+            schema:
+              type: object
+              additionalProperties: {}
+              description: Unspecified request body
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: Bulk delete successful
+        '400':
+          description: Bad request, no notifications specified
+  /api/v1/admins/notifications/send/:
+    post:
+      operationId: admins_notifications_send_create
+      description: Send a notification to specific users or all users.
+      tags:
+      - admins
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: {}
+              description: Unspecified request body
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: {}
+              description: Unspecified request body
+          multipart/form-data:
+            schema:
+              type: object
+              additionalProperties: {}
+              description: Unspecified request body
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: Notifications sent successfully
+        '400':
+          description: Bad request, missing required parameters
+  /api/v1/admins/notifications/stats/:
+    get:
+      operationId: admins_notifications_stats_retrieve
+      description: Get statistics for notifications, including total count, unread
+        count, and breakdown by type, status, and priority.
+      tags:
+      - admins
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: Notification statistics
+  /api/v1/admins/project-memberships/bulk_add/:
+    post:
+      operationId: admins_project_memberships_bulk_add_create
+      description: Add multiple users to a project as members. Skips users already
+        in the project.
+      tags:
+      - admins
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                project_id:
+                  type: integer
+                user_ids:
+                  type: array
+                  items:
+                    type: integer
+                role:
+                  type: string
+                  default: member
+              required:
+              - project_id
+              - user_ids
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                description: Members added successfully
+          description: ''
+  /api/v1/admins/project-memberships/bulk_remove/:
+    post:
+      operationId: admins_project_memberships_bulk_remove_create
+      description: Remove multiple users from a project. Use 'all' to remove all members
+        except the project owner.
+      tags:
+      - admins
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                project_id:
+                  type: integer
+                user_ids:
+                  oneOf:
+                  - type: array
+                    items:
+                      type: integer
+                  - type: string
+                    enum:
+                    - all
+              required:
+              - project_id
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                description: Members removed successfully
+          description: ''
+  /api/v1/admins/projects/:
+    get:
+      operationId: admins_projects_list
+      description: Retrieve a list of projects with filtering, ordering, and searching
+        capabilities.
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - in: query
+        name: owner
+        schema:
+          type: integer
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - completed
+          - in_progress
+          - not_started
+          - on_hold
+          - overdue
+        description: |-
+          * `not_started` - Not Started
+          * `in_progress` - In Progress
+          * `completed` - Completed
+          * `on_hold` - On Hold
+          * `overdue` - Overdue
+      tags:
+      - admins
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAdminProjectListList'
+          description: ''
+    post:
+      operationId: admins_projects_create
+      description: |-
+        Admin ViewSet for managing projects. Supports CRUD operations,
+        bulk actions (delete and status change), filtering, searching,
+        and ordering of project records.
+      tags:
+      - admins
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminProjectCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AdminProjectCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AdminProjectCreate'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminProjectCreate'
+          description: ''
+  /api/v1/admins/projects/{id}/:
+    get:
+      operationId: admins_projects_retrieve
+      description: |-
+        Admin ViewSet for managing projects. Supports CRUD operations,
+        bulk actions (delete and status change), filtering, searching,
+        and ordering of project records.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this project.
+        required: true
+      tags:
+      - admins
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminProjectDetail'
+          description: ''
+    put:
+      operationId: admins_projects_update
+      description: |-
+        Admin ViewSet for managing projects. Supports CRUD operations,
+        bulk actions (delete and status change), filtering, searching,
+        and ordering of project records.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this project.
+        required: true
+      tags:
+      - admins
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminProjectUpdate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AdminProjectUpdate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AdminProjectUpdate'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminProjectUpdate'
+          description: ''
+    patch:
+      operationId: admins_projects_partial_update
+      description: |-
+        Admin ViewSet for managing projects. Supports CRUD operations,
+        bulk actions (delete and status change), filtering, searching,
+        and ordering of project records.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this project.
+        required: true
+      tags:
+      - admins
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAdminProjectUpdate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedAdminProjectUpdate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedAdminProjectUpdate'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminProjectUpdate'
+          description: ''
+    delete:
+      operationId: admins_projects_destroy
+      description: |-
+        Admin ViewSet for managing projects. Supports CRUD operations,
+        bulk actions (delete and status change), filtering, searching,
+        and ordering of project records.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this project.
+        required: true
+      tags:
+      - admins
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/admins/projects/bulk_change_status/:
+    post:
+      operationId: admins_projects_bulk_change_status_create
+      description: Change the status of multiple projects in bulk. Validates status
+        against allowed choices.
+      tags:
+      - admins
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                project_ids:
+                  type: array
+                  items:
+                    type: integer
+                status:
+                  type: string
+                  enum:
+                  - not_started
+                  - in_progress
+                  - completed
+                  - on_hold
+                  - overdue
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                description: Project statuses updated successfully
+          description: ''
+  /api/v1/admins/projects/bulk_delete/:
+    post:
+      operationId: admins_projects_bulk_delete_create
+      description: Delete multiple projects in bulk based on their IDs.
+      tags:
+      - admins
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                project_ids:
+                  type: array
+                  items:
+                    type: integer
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                description: Projects deleted successfully
+          description: ''
+  /api/v1/admins/status-change-requests/:
+    get:
+      operationId: admins_status_change_requests_list
+      description: Retrieve a list of status change requests with the ability to filter
+        by status, task, and user.
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - approved
+          - pending
+          - rejected
+        description: |-
+          * `pending` - Pending
+          * `approved` - Approved
+          * `rejected` - Rejected
+      - in: query
+        name: task__project
+        schema:
+          type: integer
+      - in: query
+        name: user
+        schema:
+          type: integer
+      tags:
+      - admins
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAdminTaskStatusChangeRequestListList'
+          description: ''
+    post:
+      operationId: admins_status_change_requests_create
+      description: |-
+        ViewSet for managing status change requests with admin privileges.
+        Includes caching for improved performance and bulk update functionality.
+      tags:
+      - admins
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminTaskStatusChangeRequestDetail'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AdminTaskStatusChangeRequestDetail'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AdminTaskStatusChangeRequestDetail'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminTaskStatusChangeRequestDetail'
+          description: ''
+  /api/v1/admins/status-change-requests/{id}/:
+    get:
+      operationId: admins_status_change_requests_retrieve
+      description: |-
+        ViewSet for managing status change requests with admin privileges.
+        Includes caching for improved performance and bulk update functionality.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this status change request.
+        required: true
+      tags:
+      - admins
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminTaskStatusChangeRequestDetail'
+          description: ''
+    put:
+      operationId: admins_status_change_requests_update
+      description: |-
+        ViewSet for managing status change requests with admin privileges.
+        Includes caching for improved performance and bulk update functionality.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this status change request.
+        required: true
+      tags:
+      - admins
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminTaskStatusChangeRequestDetail'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AdminTaskStatusChangeRequestDetail'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AdminTaskStatusChangeRequestDetail'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminTaskStatusChangeRequestDetail'
+          description: ''
+    patch:
+      operationId: admins_status_change_requests_partial_update
+      description: |-
+        ViewSet for managing status change requests with admin privileges.
+        Includes caching for improved performance and bulk update functionality.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this status change request.
+        required: true
+      tags:
+      - admins
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAdminTaskStatusChangeRequestDetail'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedAdminTaskStatusChangeRequestDetail'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedAdminTaskStatusChangeRequestDetail'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminTaskStatusChangeRequestDetail'
+          description: ''
+    delete:
+      operationId: admins_status_change_requests_destroy
+      description: |-
+        ViewSet for managing status change requests with admin privileges.
+        Includes caching for improved performance and bulk update functionality.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this status change request.
+        required: true
+      tags:
+      - admins
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/admins/status-change-requests/bulk-update/:
+    post:
+      operationId: admins_status_change_requests_bulk_update_create
+      description: Bulk update the status of multiple status change requests. Approve
+        or reject the requests.
+      tags:
+      - admins
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminTaskStatusChangeRequestDetail'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AdminTaskStatusChangeRequestDetail'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AdminTaskStatusChangeRequestDetail'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: Bulk update successful.
+        '400':
+          description: Invalid parameters provided.
+  /api/v1/admins/subscriptions/:
+    get:
+      operationId: admins_subscriptions_list
+      description: List all subscriptions with filtering, searching, and ordering.
+      parameters:
+      - in: query
+        name: is_active
+        schema:
+          type: boolean
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - in: query
+        name: plan
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: user
+        schema:
+          type: integer
+      tags:
+      - admins
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: List of subscriptions
+    post:
+      operationId: admins_subscriptions_create
+      description: |-
+        ViewSet for managing subscriptions with admin privileges.
+        Handles subscription actions (cancel, renew) and provides statistics.
+      tags:
+      - admins
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminSubscriptionDetail'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AdminSubscriptionDetail'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AdminSubscriptionDetail'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminSubscriptionDetail'
+          description: ''
+  /api/v1/admins/subscriptions/{id}/:
+    get:
+      operationId: admins_subscriptions_retrieve
+      description: Retrieve detailed information about a subscription.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this subscription.
+        required: true
+      tags:
+      - admins
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: Subscription details
+    put:
+      operationId: admins_subscriptions_update
+      description: |-
+        ViewSet for managing subscriptions with admin privileges.
+        Handles subscription actions (cancel, renew) and provides statistics.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this subscription.
+        required: true
+      tags:
+      - admins
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminSubscriptionDetail'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AdminSubscriptionDetail'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AdminSubscriptionDetail'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminSubscriptionDetail'
+          description: ''
+    patch:
+      operationId: admins_subscriptions_partial_update
+      description: |-
+        ViewSet for managing subscriptions with admin privileges.
+        Handles subscription actions (cancel, renew) and provides statistics.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this subscription.
+        required: true
+      tags:
+      - admins
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAdminSubscriptionDetail'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedAdminSubscriptionDetail'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedAdminSubscriptionDetail'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminSubscriptionDetail'
+          description: ''
+    delete:
+      operationId: admins_subscriptions_destroy
+      description: |-
+        ViewSet for managing subscriptions with admin privileges.
+        Handles subscription actions (cancel, renew) and provides statistics.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this subscription.
+        required: true
+      tags:
+      - admins
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/admins/subscriptions/{id}/cancel-subscription/:
+    post:
+      operationId: admins_subscriptions_cancel_subscription_create
+      description: Cancel a subscription and revert to the basic plan.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this subscription.
+        required: true
+      tags:
+      - admins
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: {}
+              description: Unspecified request body
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: {}
+              description: Unspecified request body
+          multipart/form-data:
+            schema:
+              type: object
+              additionalProperties: {}
+              description: Unspecified request body
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: Subscription cancelled successfully
+        '400':
+          description: Bad request, invalid parameters
+  /api/v1/admins/subscriptions/{id}/renew-subscription/:
+    post:
+      operationId: admins_subscriptions_renew_subscription_create
+      description: Renew a subscription for another 30 days.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this subscription.
+        required: true
+      tags:
+      - admins
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminSubscriptionDetail'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AdminSubscriptionDetail'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AdminSubscriptionDetail'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: Subscription renewed successfully
+        '400':
+          description: Bad request, invalid parameters
+  /api/v1/admins/subscriptions/dashboard-stats/:
+    get:
+      operationId: admins_subscriptions_dashboard_stats_retrieve
+      description: Get overall subscription, plan, and payment statistics.
+      tags:
+      - admins
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: Dashboard statistics
+  /api/v1/admins/subscriptions/payment-stats/:
+    get:
+      operationId: admins_subscriptions_payment_stats_retrieve
+      description: Get payment statistics for completed payments.
+      tags:
+      - admins
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: Payment statistics
+  /api/v1/admins/subscriptions/payments/:
+    get:
+      operationId: admins_subscriptions_payments_retrieve
+      description: Get payment history for subscriptions.
+      tags:
+      - admins
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: List of payments
+  /api/v1/admins/subscriptions/plan-stats/:
+    get:
+      operationId: admins_subscriptions_plan_stats_retrieve
+      description: Get statistics for each subscription plan.
+      tags:
+      - admins
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: Plan statistics
+  /api/v1/admins/subscriptions/plans/:
+    get:
+      operationId: admins_subscriptions_plans_retrieve
+      description: Get all available subscription plans.
+      tags:
+      - admins
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: List of subscription plans
+  /api/v1/admins/system/check/:
+    get:
+      operationId: admins_system_check_retrieve
+      description: Perform health checks for all system components and services concurrently.
+        Returns the health status of each component.
+      tags:
+      - admins
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: System Health Check Status
+  /api/v1/admins/task-assignments/:
+    get:
+      operationId: admins_task_assignments_list
+      description: List task assignments with filtering, searching, and ordering.
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - in: query
+        name: task__project
+        schema:
+          type: integer
+      - in: query
+        name: user
+        schema:
+          type: integer
+      tags:
+      - admins
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAdminTaskAssignmentList'
+          description: ''
+    post:
+      operationId: admins_task_assignments_create
+      description: |-
+        ViewSet for managing task assignments with admin privileges.
+        Includes caching for improved performance.
+      tags:
+      - admins
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminTaskAssignment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AdminTaskAssignment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AdminTaskAssignment'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminTaskAssignment'
+          description: ''
+  /api/v1/admins/task-assignments/{id}/:
+    get:
+      operationId: admins_task_assignments_retrieve
+      description: Retrieve detailed information about a task assignment.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this task assignment.
+        required: true
+      tags:
+      - admins
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminTaskAssignment'
+          description: ''
+    put:
+      operationId: admins_task_assignments_update
+      description: |-
+        ViewSet for managing task assignments with admin privileges.
+        Includes caching for improved performance.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this task assignment.
+        required: true
+      tags:
+      - admins
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminTaskAssignment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AdminTaskAssignment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AdminTaskAssignment'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminTaskAssignment'
+          description: ''
+    patch:
+      operationId: admins_task_assignments_partial_update
+      description: |-
+        ViewSet for managing task assignments with admin privileges.
+        Includes caching for improved performance.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this task assignment.
+        required: true
+      tags:
+      - admins
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAdminTaskAssignment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedAdminTaskAssignment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedAdminTaskAssignment'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminTaskAssignment'
+          description: ''
+    delete:
+      operationId: admins_task_assignments_destroy
+      description: |-
+        ViewSet for managing task assignments with admin privileges.
+        Includes caching for improved performance.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this task assignment.
+        required: true
+      tags:
+      - admins
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/admins/tasks/assign/:
+    post:
+      operationId: admins_tasks_assign_create
+      description: Bulk assign users to tasks.
+      tags:
+      - admins
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminTaskBulkAssign'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AdminTaskBulkAssign'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AdminTaskBulkAssign'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                description: Users assigned to tasks successfully
+          description: ''
+  /api/v1/admins/tasks/bulk-update/:
+    post:
+      operationId: admins_tasks_bulk_update_create
+      description: Bulk update multiple tasks.
+      tags:
+      - admins
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminTaskBulkUpdate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AdminTaskBulkUpdate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AdminTaskBulkUpdate'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                description: Tasks updated successfully
+          description: ''
+  /api/v1/admins/tasks/unassign/:
+    post:
+      operationId: admins_tasks_unassign_create
+      description: Bulk unassign users from tasks.
+      tags:
+      - admins
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminTaskBulkUnassign'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AdminTaskBulkUnassign'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AdminTaskBulkUnassign'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                description: Users unassigned from tasks successfully
+          description: ''
+  /api/v1/admins/users/:
+    get:
+      operationId: admins_users_list
+      description: Retrieve a list of users with filtering, ordering, and searching
+        capabilities.
+      parameters:
+      - in: query
+        name: email_verified
+        schema:
+          type: boolean
+      - in: query
+        name: is_active
+        schema:
+          type: boolean
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - in: query
+        name: role
+        schema:
+          type: string
+          enum:
+          - admin
+          - user
+        description: |-
+          * `admin` - Admin
+          * `user` - User
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - admins
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAdminUserListList'
+          description: ''
+    post:
+      operationId: admins_users_create
+      description: |-
+        Admin ViewSet for managing users. Provides CRUD operations,
+        bulk actions (activate/deactivate), and email sending functionalities.
+        Supports filtering, searching, and ordering of user records.
+      tags:
+      - admins
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminUserDetail'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AdminUserDetail'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AdminUserDetail'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminUserDetail'
+          description: ''
+  /api/v1/admins/users/{id}/:
+    get:
+      operationId: admins_users_retrieve
+      description: |-
+        Admin ViewSet for managing users. Provides CRUD operations,
+        bulk actions (activate/deactivate), and email sending functionalities.
+        Supports filtering, searching, and ordering of user records.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
+      tags:
+      - admins
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminUserDetail'
+          description: ''
+    put:
+      operationId: admins_users_update
+      description: |-
+        Admin ViewSet for managing users. Provides CRUD operations,
+        bulk actions (activate/deactivate), and email sending functionalities.
+        Supports filtering, searching, and ordering of user records.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
+      tags:
+      - admins
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminUserDetail'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AdminUserDetail'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AdminUserDetail'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminUserDetail'
+          description: ''
+    patch:
+      operationId: admins_users_partial_update
+      description: |-
+        Admin ViewSet for managing users. Provides CRUD operations,
+        bulk actions (activate/deactivate), and email sending functionalities.
+        Supports filtering, searching, and ordering of user records.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
+      tags:
+      - admins
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAdminUserDetail'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedAdminUserDetail'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedAdminUserDetail'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminUserDetail'
+          description: ''
+    delete:
+      operationId: admins_users_destroy
+      description: |-
+        Admin ViewSet for managing users. Provides CRUD operations,
+        bulk actions (activate/deactivate), and email sending functionalities.
+        Supports filtering, searching, and ordering of user records.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
+      tags:
+      - admins
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/admins/users/activate/:
+    post:
+      operationId: admins_users_activate_create
+      description: Activate multiple users or all users.
+      tags:
+      - admins
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_ids:
+                  type: array
+                  items:
+                    type: integer
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                description: Success
+          description: ''
+  /api/v1/admins/users/deactivate/:
+    post:
+      operationId: admins_users_deactivate_create
+      description: Deactivate multiple users or all users, excluding admin roles.
+      tags:
+      - admins
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_ids:
+                  type: array
+                  items:
+                    type: integer
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                description: Success
+          description: ''
+  /api/v1/admins/users/send_email/:
+    post:
+      operationId: admins_users_send_email_create
+      description: Send emails to specific users or all users.
+      tags:
+      - admins
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_ids:
+                  type: array
+                  items:
+                    type: integer
+                subject:
+                  type: string
+                message:
+                  type: string
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                description: Emails sent successfully
+          description: ''
+  /api/v1/notifications/:
+    get:
+      operationId: notifications_list
+      description: |-
+        API view to list notifications for the authenticated user.
+        Supports filtering and ordering of notifications.
+      parameters:
+      - in: query
+        name: created_at_after
+        schema:
+          type: string
+          format: date-time
+        description: Filter by creation date range
+      - in: query
+        name: created_at_before
+        schema:
+          type: string
+          format: date-time
+        description: Filter by creation date range
+      - in: query
+        name: is_read
+        schema:
+          type: boolean
+        description: Filter by read status (true/false)
+      - in: query
+        name: notification_type
+        schema:
+          type: string
+        description: Filter by exact notification type (case-insensitive)
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - in: query
+        name: priority
+        schema:
+          type: string
+          enum:
+          - high
+          - low
+          - medium
+        description: |-
+          Filter by notification priority
+
+          * `low` - Low
+          * `medium` - Medium
+          * `high` - High
+      tags:
+      - notifications
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedNotificationListList'
+          description: ''
+    post:
+      operationId: notifications_create
+      description: Handle POST request to mark notifications as read.
+      summary: Mark Notifications as Read
+      tags:
+      - notifications
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ids:
+                  type: array
+                  items:
+                    type: integer
+                  description: List of notification IDs to mark as read. If empty,
+                    all unread notifications will be marked as read.
+              example:
+                ids:
+                - 1
+                - 2
+                - 3
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                message: Notifications marked as read successfully.
+                code: 200
+                data:
+                  marked_count: 3
+          description: ''
+  /api/v1/notifications/{id}/:
+    get:
+      operationId: notifications_retrieve
+      description: Retrieve details of a specific notification.
+      summary: Retrieve Notification Details
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - notifications
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationDetail'
+          description: ''
+    put:
+      operationId: notifications_update
+      description: Update a notification (e.g., mark as read).
+      summary: Update Notification
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - notifications
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationDetail'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/NotificationDetail'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/NotificationDetail'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationDetail'
+          description: ''
+    patch:
+      operationId: notifications_partial_update
+      description: Partially update a notification.
+      summary: Partially Update Notification
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - notifications
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedNotificationDetail'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedNotificationDetail'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedNotificationDetail'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationDetail'
+          description: ''
+  /api/v1/notifications/preferences/:
+    get:
+      operationId: notifications_preferences_retrieve
+      description: Retrieve notification preferences for the authenticated user.
+      summary: Get Notification Preferences
+      tags:
+      - notifications
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationPreference'
+          description: ''
+    put:
+      operationId: notifications_preferences_update
+      description: Update all notification preferences for the authenticated user.
+      summary: Update Notification Preferences
+      tags:
+      - notifications
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationPreference'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/NotificationPreference'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/NotificationPreference'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationPreference'
+          description: ''
+    patch:
+      operationId: notifications_preferences_partial_update
+      description: Partially update notification preferences for the authenticated
+        user.
+      summary: Partially Update Notification Preferences
+      tags:
+      - notifications
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedNotificationPreference'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedNotificationPreference'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedNotificationPreference'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationPreference'
+          description: ''
+  /api/v1/projects/:
+    get:
+      operationId: projects_list
+      parameters:
+      - in: query
+        name: due_date_after
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: due_date_before
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: name
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - completed
+          - in_progress
+          - not_started
+          - on_hold
+          - overdue
+        description: |-
+          * `not_started` - Not Started
+          * `in_progress` - In Progress
+          * `completed` - Completed
+          * `on_hold` - On Hold
+          * `overdue` - Overdue
+      tags:
+      - projects
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedProjectListList'
+          description: ''
+    post:
+      operationId: projects_create
+      tags:
+      - projects
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProjectCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProjectCreate'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectCreate'
+          description: ''
+  /api/v1/projects/{id}/:
+    get:
+      operationId: projects_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - projects
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+          description: ''
+    put:
+      operationId: projects_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - projects
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectUpdate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProjectUpdate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProjectUpdate'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectUpdate'
+          description: ''
+    patch:
+      operationId: projects_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - projects
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedProjectUpdate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedProjectUpdate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedProjectUpdate'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectUpdate'
+          description: ''
+    delete:
+      operationId: projects_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - projects
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/projects/memberships/{id}/:
+    get:
+      operationId: projects_memberships_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - projects
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DetailedProjectMembership'
+          description: ''
+  /api/v1/subscriptions/cancel/:
+    post:
+      operationId: subscriptions_cancel_create
+      description: Cancel the authenticated user's subscription and revert to the
+        basic plan.
+      summary: Cancel subscription
+      tags:
+      - subscriptions
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+                description: Unspecified response body
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+                description: Unspecified response body
+          description: ''
+  /api/v1/subscriptions/checkout-session/:
+    post:
+      operationId: subscriptions_checkout_session_create
+      description: Generate a Stripe checkout session for the authenticated user to
+        upgrade their subscription.
+      summary: Create checkout session
+      parameters:
+      - in: query
+        name: plan_id
+        schema:
+          type: integer
+        description: ID of the subscription plan to upgrade to
+        required: true
+      tags:
+      - subscriptions
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+                description: Unspecified response body
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+                description: Unspecified response body
+          description: ''
+  /api/v1/subscriptions/me/:
+    get:
+      operationId: subscriptions_me_retrieve
+      description: Retrieve the details of the currently active subscription for the
+        authenticated user.
+      summary: Get current user's subscription details
+      tags:
+      - subscriptions
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+          description: ''
+  /api/v1/subscriptions/payments/:
+    get:
+      operationId: subscriptions_payments_list
+      description: Retrieve a list of all payments made by the authenticated user.
+      summary: List user payments
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - subscriptions
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPaymentList'
+          description: ''
+  /api/v1/subscriptions/plans/:
+    get:
+      operationId: subscriptions_plans_list
+      description: Retrieve a list of all available subscription plans.
+      summary: List all subscription plans
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - subscriptions
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSubscriptionPlanList'
+          description: ''
+  /api/v1/subscriptions/stripe/webhook/:
+    post:
+      operationId: subscriptions_stripe_webhook_create
+      description: Handle events sent by Stripe, such as checkout session completion.
+      summary: Stripe webhook handler
+      tags:
+      - subscriptions
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+                description: Unspecified response body
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+                description: Unspecified response body
+          description: ''
+  /api/v1/subscriptions/upgrade/:
+    post:
+      operationId: subscriptions_upgrade_create
+      description: Upgrade the authenticated user's subscription plan to a higher-tier
+        plan.
+      summary: Upgrade subscription
+      parameters:
+      - in: query
+        name: plan_id
+        schema:
+          type: integer
+        description: ID of the new subscription plan
+        required: true
+      tags:
+      - subscriptions
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+                description: Unspecified response body
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+                description: Unspecified response body
+          description: ''
+  /api/v1/tasks/:
+    get:
+      operationId: tasks_list
+      description: View to list all tasks or create a new task with assignees.
+      parameters:
+      - in: query
+        name: assigned_by
+        schema:
+          type: integer
+      - in: query
+        name: created_at__gte
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: created_at__lte
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: due_date
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: due_date__gte
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: due_date__lte
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: need_approval
+        schema:
+          type: boolean
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - in: query
+        name: project
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - completed
+          - in_progress
+          - not_started
+          - overdue
+        description: |-
+          * `not_started` - Not Started
+          * `in_progress` - In Progress
+          * `completed` - Completed
+          * `overdue` - Overdue
+      tags:
+      - tasks
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTaskListList'
+          description: ''
+    post:
+      operationId: tasks_create
+      description: Retrieve a list of tasks with filters or create a new task.
+      summary: List and Create Tasks
+      parameters:
+      - in: query
+        name: assigned_by
+        schema:
+          type: integer
+        description: Filter tasks by assigner ID
+      - in: query
+        name: created_at__gte
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: created_at__lte
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: due_date
+        schema:
+          type: string
+        description: Filter tasks by due date
+      - in: query
+        name: due_date__gte
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: due_date__lte
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: need_approval
+        schema:
+          type: boolean
+        description: Filter tasks requiring approval
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: Page number for pagination
+      - in: query
+        name: page_size
+        schema:
+          type: integer
+        description: Number of items per page
+      - in: query
+        name: project
+        schema:
+          type: integer
+        description: Filter tasks by project ID
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: status
+        schema:
+          type: string
+        description: Filter tasks by status
+      tags:
+      - tasks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TaskCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TaskCreate'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTaskListList'
+          description: ''
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+                description: Unspecified response body
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+                description: Unspecified response body
+          description: ''
+  /api/v1/tasks/{id}/:
+    get:
+      operationId: tasks_retrieve
+      description: Retrieve task details, including assignees, project information,
+        and task status.
+      summary: Retrieve Task Details
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - tasks
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskDetail'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+                description: Unspecified response body
+          description: ''
+    put:
+      operationId: tasks_update
+      description: Update task details, such as assignees, status, or other fields.
+      summary: Update Task
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - tasks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskUpdate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TaskUpdate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TaskUpdate'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskDetail'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+                description: Unspecified response body
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+                description: Unspecified response body
+          description: ''
+    patch:
+      operationId: tasks_partial_update
+      description: Partially update task details.
+      summary: Partially Update Task
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - tasks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedTaskUpdate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedTaskUpdate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedTaskUpdate'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskDetail'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+                description: Unspecified response body
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+                description: Unspecified response body
+          description: ''
+    delete:
+      operationId: tasks_destroy
+      description: Delete a specific task and notify assignees.
+      summary: Delete Task
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - tasks
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+                description: Unspecified response body
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+                description: Unspecified response body
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+                description: Unspecified response body
+          description: ''
+  /api/v1/tasks/comments/:
+    get:
+      operationId: tasks_comments_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: task
+        schema:
+          type: integer
+      tags:
+      - tasks
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCommentListList'
+          description: ''
+    post:
+      operationId: tasks_comments_create
+      description: Get a list of comments based on query parameters or create a new
+        comment.
+      summary: List and Create Comments
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: Page number for pagination
+      - in: query
+        name: page_size
+        schema:
+          type: integer
+        description: Number of items per page
+      - in: query
+        name: parent_id
+        schema:
+          type: integer
+        description: ID of the parent comment for replies
+      - in: query
+        name: project_id
+        schema:
+          type: integer
+        description: ID of the project
+      - in: query
+        name: search
+        schema:
+          type: string
+        description: Search comments by content or author username
+      - in: query
+        name: task
+        schema:
+          type: integer
+      - in: query
+        name: task_id
+        schema:
+          type: integer
+        description: ID of the task
+      tags:
+      - tasks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommentCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CommentCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CommentCreate'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCommentListList'
+          description: ''
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommentList'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                description: Forbidden
+          description: ''
+  /api/v1/tasks/comments/{id}/:
+    get:
+      operationId: tasks_comments_retrieve
+      description: Get details of a specific comment, update its content, or delete
+        it.
+      summary: Retrieve, Update or Delete a Comment
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - tasks
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommentDetail'
+          description: ''
+        '204':
+          description: No response body
+        '403':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+                description: Unspecified response body
+          description: ''
+    put:
+      operationId: tasks_comments_update
+      description: Update the content of a specific comment.
+      summary: Update a Comment
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - tasks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommentDetail'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CommentDetail'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CommentDetail'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommentDetail'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+                description: Unspecified response body
+          description: ''
+    patch:
+      operationId: tasks_comments_partial_update
+      description: API view to retrieve, update, or delete a specific comment.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - tasks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCommentDetail'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCommentDetail'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCommentDetail'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommentDetail'
+          description: ''
+    delete:
+      operationId: tasks_comments_destroy
+      description: Delete a specific comment.
+      summary: Delete a Comment
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - tasks
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+        '403':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+                description: Unspecified response body
+          description: ''
+  /api/v1/tasks/comments/{id}/replies/:
+    get:
+      operationId: tasks_comments_replies_list
+      description: Handles listing replies for a specific comment with pagination.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - tasks
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCommentListList'
+          description: ''
+  /api/v1/tasks/status/change/{id}/:
+    patch:
+      operationId: tasks_status_change_partial_update
+      description: Update the status of a task if the user is assigned and the task
+        does not require approval.
+      summary: Update Task Status
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - tasks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedTaskStatusChange'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedTaskStatusChange'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedTaskStatusChange'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+                description: Unspecified response body
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+                description: Unspecified response body
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+                description: Unspecified response body
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+                description: Unspecified response body
+          description: ''
+  /api/v1/tasks/status/change/requests/:
+    get:
+      operationId: tasks_status_change_requests_list
+      description: API view for listing and creating status change requests.
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - tasks
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedStatusChangeRequestList'
+          description: ''
+    post:
+      operationId: tasks_status_change_requests_create
+      description: API view for listing and creating status change requests.
+      tags:
+      - tasks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StatusChangeRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/StatusChangeRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/StatusChangeRequest'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusChangeRequest'
+          description: ''
+  /api/v1/tasks/status/change/requests/{id}/:
+    get:
+      operationId: tasks_status_change_requests_retrieve
+      description: Retrieve details of a specific status change request by its ID.
+      summary: Retrieve Status Change Request
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - tasks
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusChangeRequest'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+                description: Unspecified response body
+          description: ''
+    put:
+      operationId: tasks_status_change_requests_update
+      description: API view for retrieving, updating, or deleting a specific status
+        change request.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - tasks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StatusChangeRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/StatusChangeRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/StatusChangeRequest'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusChangeRequest'
+          description: ''
+    patch:
+      operationId: tasks_status_change_requests_partial_update
+      description: API view for retrieving, updating, or deleting a specific status
+        change request.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - tasks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedStatusChangeRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedStatusChangeRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedStatusChangeRequest'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusChangeRequest'
+          description: ''
+    delete:
+      operationId: tasks_status_change_requests_destroy
+      description: Delete a specific status change request.
+      summary: Delete Status Change Request
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - tasks
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+                description: Unspecified response body
+          description: ''
+  /api/v1/tasks/status/change/requests/{id}/action/:
+    post:
+      operationId: tasks_status_change_requests_action_create
+      description: Approve or reject a pending status change request.
+      summary: Accept/Reject Status Change Request
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - tasks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StatusChangeAction'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/StatusChangeAction'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/StatusChangeAction'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusChangeRequest'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+                description: Unspecified response body
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+                description: Unspecified response body
+          description: ''
+  /api/v1/users/login/:
+    post:
+      operationId: users_login_create
+      description: Handles user login and returns JWT tokens
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLogin'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserLogin'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserLogin'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          description: Login successful, returns tokens
+        '401':
+          description: Invalid credentials
+        '403':
+          description: Email not verified
+  /api/v1/users/logout/:
+    post:
+      operationId: users_logout_create
+      description: Handles user logout by blacklisting the refresh token
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '205':
+          description: Logged out successfully
+        '400':
+          description: Invalid token
+  /api/v1/users/otp/send/:
+    post:
+      operationId: users_otp_send_create
+      description: Handles OTP sending for various purposes like registration or password
+        reset
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OtpSend'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/OtpSend'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/OtpSend'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          description: OTP sent successfully
+        '400':
+          description: Invalid request data
+  /api/v1/users/otp/verify/:
+    post:
+      operationId: users_otp_verify_create
+      description: Handles OTP verification for various purposes
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OtpVerification'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/OtpVerification'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/OtpVerification'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          description: OTP verified successfully, returns tokens
+        '400':
+          description: Invalid or expired OTP
+  /api/v1/users/password/change/:
+    post:
+      operationId: users_password_change_create
+      description: An endpoint for changing the user password
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangePassword'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ChangePassword'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ChangePassword'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: Password updated successfully
+        '400':
+          description: Invalid password data
+  /api/v1/users/password/reset/:
+    post:
+      operationId: users_password_reset_create
+      description: Handles password reset requests by sending OTP
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordResetRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PasswordResetRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PasswordResetRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          description: Password reset OTP sent successfully
+        '404':
+          description: User not found
+  /api/v1/users/password/reset/confirm/:
+    post:
+      operationId: users_password_reset_confirm_create
+      description: Handles password reset confirmation and token generation
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordResetConfirm'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PasswordResetConfirm'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PasswordResetConfirm'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          description: Password reset successful, returns new tokens
+        '400':
+          description: Invalid reset data
+  /api/v1/users/profile/:
+    get:
+      operationId: users_profile_retrieve
+      description: Handles user profile retrieval and updates
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+          description: ''
+        '403':
+          description: Permission denied
+        '404':
+          description: Profile not found
+    put:
+      operationId: users_profile_update
+      description: Handles user profile retrieval and updates
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Profile'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Profile'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Profile'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+          description: ''
+        '403':
+          description: Permission denied
+        '404':
+          description: Profile not found
+    patch:
+      operationId: users_profile_partial_update
+      description: Handles user profile retrieval and updates
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedProfile'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedProfile'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedProfile'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+          description: ''
+        '403':
+          description: Permission denied
+        '404':
+          description: Profile not found
+  /api/v1/users/register/:
+    post:
+      operationId: users_register_create
+      description: Handles user registration and sends verification OTP
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegistration'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserRegistration'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserRegistration'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '201':
+          description: Registration successful, OTP sent
+        '200':
+          description: User exists but email not verified, OTP resent
+        '400':
+          description: Invalid registration data
+  /api/v1/users/token/:
+    post:
+      operationId: users_token_create
+      description: Custom token view that uses MyTokenObtainPairSerializer
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MyTokenObtainPair'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MyTokenObtainPair'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MyTokenObtainPair'
+        required: true
+      responses:
+        '200':
+          description: Returns access and refresh tokens
+  /api/v1/users/token/refresh/:
+    post:
+      operationId: users_token_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+components:
+  schemas:
+    ActionEnum:
+      enum:
+      - accept
+      - reject
+      type: string
+      description: |-
+        * `accept` - accept
+        * `reject` - reject
+    AdminActionLog:
+      type: object
+      description: Serializer for action logs performed by admin users, including
+        user details and content type.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          type: string
+          readOnly: true
+        content_type:
+          type: string
+          readOnly: true
+        action:
+          type: string
+          maxLength: 255
+        object_id:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          nullable: true
+        changes: {}
+        timestamp:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - action
+      - content_type
+      - id
+      - timestamp
+      - user
+    AdminCommentCreateUpdate:
+      type: object
+      description: |-
+        Serializer for creating and updating comments, with validation logic for task, parent,
+        and nesting of comments up to a certain depth.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        task:
+          type: integer
+        author:
+          type: integer
+        content:
+          type: string
+          maxLength: 1000
+        parent:
+          type: integer
+          nullable: true
+      required:
+      - author
+      - content
+      - id
+      - task
+    AdminCommentDetail:
+      type: object
+      description: |-
+        Serializer to represent a detailed view of a comment in the admin interface,
+        including related task, project, and user information, as well as content rendering.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        task:
+          type: string
+          readOnly: true
+        project:
+          type: string
+          readOnly: true
+        author:
+          type: integer
+          readOnly: true
+        content:
+          type: string
+          maxLength: 1000
+        rendered_content:
+          type: string
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        mentioned_users:
+          type: array
+          items:
+            type: integer
+          readOnly: true
+        parent:
+          type: integer
+          nullable: true
+        reply_count:
+          type: integer
+          readOnly: true
+        mention_count:
+          type: integer
+          readOnly: true
+        has_replies:
+          type: string
+          readOnly: true
+      required:
+      - author
+      - content
+      - created_at
+      - has_replies
+      - id
+      - mention_count
+      - mentioned_users
+      - project
+      - rendered_content
+      - reply_count
+      - task
+      - updated_at
+    AdminCommentList:
+      type: object
+      description: Serializer for listing comments in the admin interface, with additional
+        information about the project and rendered content.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        task:
+          type: string
+          readOnly: true
+        author:
+          type: integer
+          readOnly: true
+        content:
+          type: string
+          maxLength: 1000
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        reply_count:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        has_replies:
+          type: string
+          readOnly: true
+        project:
+          type: string
+          readOnly: true
+        rendered_content:
+          type: string
+          readOnly: true
+      required:
+      - author
+      - content
+      - created_at
+      - has_replies
+      - id
+      - project
+      - rendered_content
+      - task
+    AdminPaymentHistory:
+      type: object
+      description: Serializer for Payment model to show payment history details, including
+        amount and related payment intent.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,4}(?:\.\d{0,2})?$
+        date:
+          type: string
+          format: date-time
+        stripe_payment_intent_id:
+          type: string
+          maxLength: 100
+      required:
+      - amount
+      - id
+      - stripe_payment_intent_id
+    AdminProfile:
+      type: object
+      description: |-
+        Serializer for the Profile model.
+        Includes fields related to the user's profile, such as address, city, and country.
+      properties:
+        address:
+          type: string
+          nullable: true
+          maxLength: 255
+        city:
+          type: string
+          nullable: true
+          maxLength: 100
+        country:
+          type: string
+          nullable: true
+          maxLength: 100
+        date_of_birth:
+          type: string
+          format: date
+          nullable: true
+        profile_picture:
+          type: string
+          format: uri
+          nullable: true
+        phone_number:
+          type: string
+          nullable: true
+          maxLength: 15
+        owned_projects_count:
+          type: integer
+          readOnly: true
+        participated_projects_count:
+          type: integer
+          readOnly: true
+      required:
+      - owned_projects_count
+      - participated_projects_count
+    AdminProjectCreate:
+      type: object
+      description: |-
+        Serializer for creating projects with additional logic for assigning the owner.
+        Includes validation for the number of members allowed by the owner's subscription plan.
+      properties:
+        name:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+          nullable: true
+        due_date:
+          type: string
+          format: date-time
+          nullable: true
+        members:
+          type: array
+          items:
+            type: integer
+            writeOnly: true
+          writeOnly: true
+        status:
+          $ref: '#/components/schemas/StatusC03Enum'
+        owner:
+          type: integer
+      required:
+      - name
+    AdminProjectDetail:
+      type: object
+      description: Serializer for retrieving detailed information about a project
+        with memberships.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        total_tasks:
+          type: integer
+          readOnly: true
+        status:
+          $ref: '#/components/schemas/StatusC03Enum'
+        due_date:
+          type: string
+          format: date-time
+          nullable: true
+        total_member_count:
+          type: integer
+          readOnly: true
+        owner:
+          type: string
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectMembership'
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - members
+      - name
+      - owner
+      - total_member_count
+      - total_tasks
+      - updated_at
+    AdminProjectList:
+      type: object
+      description: Serializer for listing projects with additional field for the owner's
+        username.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+          nullable: true
+        status:
+          $ref: '#/components/schemas/StatusC03Enum'
+        due_date:
+          type: string
+          format: date-time
+          nullable: true
+        owner:
+          type: string
+      required:
+      - id
+      - name
+      - owner
+    AdminProjectUpdate:
+      type: object
+      description: |-
+        Admin serializer for updating projects with special handling for ownership and membership updates.
+        Allows the assignment of a new owner and manages membership roles accordingly.
+      properties:
+        name:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+          nullable: true
+        due_date:
+          type: string
+          format: date-time
+          nullable: true
+        status:
+          $ref: '#/components/schemas/StatusC03Enum'
+        members:
+          type: array
+          items:
+            type: integer
+        owner:
+          type: integer
+      required:
+      - name
+    AdminSubscriptionDetail:
+      type: object
+      description: |-
+        Serializer for providing detailed information about a user's subscription, including
+        payment history, usage stats, and associated plan details.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          type: integer
+        plan:
+          allOf:
+          - $ref: '#/components/schemas/AdminSubscriptionPlan'
+          readOnly: true
+        start_date:
+          type: string
+          format: date-time
+        end_date:
+          type: string
+          format: date-time
+          nullable: true
+        is_active:
+          type: boolean
+        payment_history:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdminPaymentHistory'
+          readOnly: true
+        usage_stats:
+          type: string
+          readOnly: true
+      required:
+      - id
+      - payment_history
+      - plan
+      - usage_stats
+      - user
+    AdminSubscriptionPlan:
+      type: object
+      description: Serializer for SubscriptionPlan model, used in the admin interface
+        for managing subscription plans.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          $ref: '#/components/schemas/NameEnum'
+        description:
+          type: string
+          nullable: true
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,4}(?:\.\d{0,2})?$
+        duration_days:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        stripe_price_id:
+          type: string
+          maxLength: 100
+        max_projects:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -1
+          format: int64
+        max_members_per_project:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -1
+          format: int64
+      required:
+      - id
+      - max_members_per_project
+      - max_projects
+      - name
+      - price
+      - stripe_price_id
+    AdminTaskAssignment:
+      type: object
+      description: Serializer for task assignments, used to represent assignment details
+        in the admin interface.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        assigned_at:
+          type: string
+          format: date-time
+          readOnly: true
+        task:
+          type: integer
+        user:
+          type: integer
+      required:
+      - assigned_at
+      - id
+      - task
+      - user
+    AdminTaskBulkAssign:
+      type: object
+      description: |-
+        Serializer for bulk assigning users to multiple tasks.
+        Validates the assignees to ensure they are valid members of the respective project.
+      properties:
+        task_ids:
+          type: array
+          items:
+            type: integer
+        user_ids:
+          type: array
+          items:
+            type: integer
+      required:
+      - task_ids
+      - user_ids
+    AdminTaskBulkUnassign:
+      type: object
+      description: |-
+        Serializer for bulk unassigning users from tasks.
+        Validates that users are currently assigned to the tasks.
+      properties:
+        task_ids:
+          type: array
+          items:
+            type: integer
+        user_ids:
+          type: array
+          items:
+            type: integer
+      required:
+      - task_ids
+      - user_ids
+    AdminTaskBulkUpdate:
+      type: object
+      description: Serializer to update multiple tasks in bulk, such as changing due
+        date, project, or status.
+      properties:
+        task_ids:
+          type: array
+          items:
+            type: integer
+        due_date:
+          type: string
+          format: date-time
+        project:
+          type: integer
+        status:
+          $ref: '#/components/schemas/StatusA33Enum'
+      required:
+      - task_ids
+    AdminTaskStatusChangeRequestDetail:
+      type: object
+      description: Serializer for showing detailed information about a specific status
+        change request.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        request_time:
+          type: string
+          format: date-time
+          readOnly: true
+        reason:
+          type: string
+          nullable: true
+        status:
+          $ref: '#/components/schemas/StatusDe3Enum'
+        resolution_time:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        approved_by:
+          type: integer
+        task:
+          type: integer
+        user:
+          type: integer
+      required:
+      - approved_by
+      - id
+      - request_time
+      - resolution_time
+      - task
+      - user
+    AdminTaskStatusChangeRequestList:
+      type: object
+      description: |-
+        Serializer for listing status change requests for tasks.
+        It includes task and user primary keys for easy reference.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        task:
+          type: integer
+        status:
+          $ref: '#/components/schemas/StatusDe3Enum'
+        user:
+          type: integer
+      required:
+      - id
+      - task
+      - user
+    AdminUserDetail:
+      type: object
+      description: |-
+        Serializer for the User model with a nested Profile serializer.
+        Allows detailed view of the user along with their profile information.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        role:
+          $ref: '#/components/schemas/Role6caEnum'
+        is_staff:
+          type: boolean
+        is_active:
+          type: boolean
+        email_verified:
+          type: boolean
+        pending_email:
+          type: string
+          format: email
+          nullable: true
+          maxLength: 254
+        date_joined:
+          type: string
+          format: date-time
+          readOnly: true
+        last_login:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        last_seen:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        profile:
+          $ref: '#/components/schemas/AdminProfile'
+      required:
+      - date_joined
+      - email
+      - id
+      - last_login
+      - last_seen
+      - username
+    AdminUserList:
+      type: object
+      description: |-
+        Serializer for listing users with minimal data.
+        Only essential fields are included for the list view.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        role:
+          $ref: '#/components/schemas/Role6caEnum'
+        is_active:
+          type: boolean
+      required:
+      - email
+      - id
+      - username
+    ChangePassword:
+      type: object
+      description: Serializer for changing user password.
+      properties:
+        old_password:
+          type: string
+          writeOnly: true
+        new_password:
+          type: string
+          writeOnly: true
+        confirm_password:
+          type: string
+          writeOnly: true
+      required:
+      - confirm_password
+      - new_password
+      - old_password
+    CommentCreate:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        task:
+          type: integer
+        content:
+          type: string
+          maxLength: 1000
+        parent:
+          type: integer
+          nullable: true
+      required:
+      - content
+      - id
+      - task
+    CommentDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        task:
+          type: string
+          readOnly: true
+        project:
+          type: string
+          readOnly: true
+        author:
+          type: integer
+          readOnly: true
+        content:
+          type: string
+          maxLength: 1000
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        mentioned_users:
+          type: array
+          items:
+            type: integer
+          readOnly: true
+        parent:
+          type: integer
+          nullable: true
+        reply_count:
+          type: integer
+          readOnly: true
+        mention_count:
+          type: integer
+          readOnly: true
+        has_replies:
+          type: string
+          readOnly: true
+      required:
+      - author
+      - content
+      - created_at
+      - has_replies
+      - id
+      - mention_count
+      - mentioned_users
+      - project
+      - reply_count
+      - task
+      - updated_at
+    CommentList:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        task:
+          type: string
+          readOnly: true
+        author:
+          type: integer
+          readOnly: true
+        content:
+          type: string
+          maxLength: 1000
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        reply_count:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        has_replies:
+          type: string
+          readOnly: true
+      required:
+      - author
+      - content
+      - created_at
+      - has_replies
+      - id
+      - task
+    ContentType:
+      type: object
+      description: Serializer for ContentType model, used for generic relations.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        app_label:
+          type: string
+          maxLength: 100
+        model:
+          type: string
+          title: Python model class name
+          maxLength: 100
+      required:
+      - app_label
+      - id
+      - model
+    CustomUser:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+      required:
+      - id
+      - username
+    DetailedProjectMembership:
+      type: object
+      properties:
+        user:
+          allOf:
+          - $ref: '#/components/schemas/DetailedUser'
+          readOnly: true
+        joined_at:
+          type: string
+          format: date-time
+        total_tasks:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        completed_tasks:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+      required:
+      - user
+    DetailedUser:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        last_login:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+      - email
+      - id
+      - username
+    MyTokenObtainPair:
+      type: object
+      description: Custom serializer to add additional claims in the JWT token.
+      properties:
+        username:
+          type: string
+          writeOnly: true
+        password:
+          type: string
+          writeOnly: true
+      required:
+      - password
+      - username
+    NameEnum:
+      enum:
+      - basic
+      - pro
+      - enterprise
+      type: string
+      description: |-
+        * `basic` - Basic
+        * `pro` - Pro
+        * `enterprise` - Enterprise
+    NotificationAdmin:
+      type: object
+      description: Serializer for representing notifications in the admin interface.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        message:
+          type: string
+          description: Content of the notification
+        is_read:
+          type: boolean
+          description: Indicates if the notification has been read
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: Timestamp when notification was created
+        object_id:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          nullable: true
+          description: ID of the related object
+        notification_type:
+          allOf:
+          - $ref: '#/components/schemas/NotificationTypeEnum'
+          description: |-
+            Category of notification (e.g., task, project)
+
+            * `account` - Account Notifications
+            * `project` - Project Notifications
+            * `task` - Task Notifications
+            * `comment` - Comment Mentions
+            * `subscription` - Subscription Updates
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Status77dEnum'
+          description: |-
+            Delivery status of the notification
+
+            * `pending` - Pending
+            * `delivered` - Delivered
+            * `failed` - Failed
+        priority:
+          allOf:
+          - $ref: '#/components/schemas/PriorityEnum'
+          description: |-
+            Priority of the notification
+
+            * `low` - Low
+            * `medium` - Medium
+            * `high` - High
+        retry_count:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        last_attempt_at:
+          type: string
+          format: date-time
+          nullable: true
+        recipient:
+          type: integer
+          description: User who will receive the notification
+        sender:
+          type: integer
+          nullable: true
+          description: User who triggered the notification
+        content_type:
+          type: integer
+          nullable: true
+          description: Type of object this notification refers to
+      required:
+      - created_at
+      - id
+      - message
+      - notification_type
+      - recipient
+    NotificationDetail:
+      type: object
+      description: |-
+        Detailed serializer for Notification model.
+        Includes all fields and related information for a comprehensive view of a notification.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        recipient:
+          allOf:
+          - $ref: '#/components/schemas/UserMinimal'
+          readOnly: true
+        message:
+          type: string
+          description: Content of the notification
+        is_read:
+          type: boolean
+          description: Indicates if the notification has been read
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: Timestamp when notification was created
+        notification_type:
+          allOf:
+          - $ref: '#/components/schemas/NotificationTypeEnum'
+          description: |-
+            Category of notification (e.g., task, project)
+
+            * `account` - Account Notifications
+            * `project` - Project Notifications
+            * `task` - Task Notifications
+            * `comment` - Comment Mentions
+            * `subscription` - Subscription Updates
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Status77dEnum'
+          readOnly: true
+          description: |-
+            Delivery status of the notification
+
+            * `pending` - Pending
+            * `delivered` - Delivered
+            * `failed` - Failed
+        priority:
+          allOf:
+          - $ref: '#/components/schemas/PriorityEnum'
+          description: |-
+            Priority of the notification
+
+            * `low` - Low
+            * `medium` - Medium
+            * `high` - High
+        content_type:
+          allOf:
+          - $ref: '#/components/schemas/ContentType'
+          readOnly: true
+        object_id:
+          type: integer
+          readOnly: true
+          nullable: true
+          description: ID of the related object
+      required:
+      - content_type
+      - created_at
+      - id
+      - message
+      - notification_type
+      - object_id
+      - recipient
+      - status
+    NotificationList:
+      type: object
+      description: |-
+        Serializer for listing notifications with essential information.
+        Used in list views to provide a concise representation of notifications.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        message:
+          type: string
+          description: Content of the notification
+        is_read:
+          type: boolean
+          description: Indicates if the notification has been read
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: Timestamp when notification was created
+        notification_type:
+          allOf:
+          - $ref: '#/components/schemas/NotificationTypeEnum'
+          description: |-
+            Category of notification (e.g., task, project)
+
+            * `account` - Account Notifications
+            * `project` - Project Notifications
+            * `task` - Task Notifications
+            * `comment` - Comment Mentions
+            * `subscription` - Subscription Updates
+        priority:
+          allOf:
+          - $ref: '#/components/schemas/PriorityEnum'
+          description: |-
+            Priority of the notification
+
+            * `low` - Low
+            * `medium` - Medium
+            * `high` - High
+      required:
+      - created_at
+      - id
+      - message
+      - notification_type
+    NotificationPreference:
+      type: object
+      description: |-
+        Serializer for NotificationPreference model.
+        Handles user preferences for different types of notifications.
+      properties:
+        user:
+          type: integer
+          readOnly: true
+          description: User whose notification preferences these are
+        preferences:
+          description: JSON object storing notification preferences
+      required:
+      - user
+    NotificationTypeEnum:
+      enum:
+      - account
+      - project
+      - task
+      - comment
+      - subscription
+      type: string
+      description: |-
+        * `account` - Account Notifications
+        * `project` - Project Notifications
+        * `task` - Task Notifications
+        * `comment` - Comment Mentions
+        * `subscription` - Subscription Updates
+    OtpSend:
+      type: object
+      description: Serializer to send OTP for various purposes.
+      properties:
+        email:
+          type: string
+          format: email
+        purpose:
+          $ref: '#/components/schemas/PurposeEnum'
+      required:
+      - email
+      - purpose
+    OtpVerification:
+      type: object
+      description: Serializer to verify OTP.
+      properties:
+        email:
+          type: string
+          format: email
+        otp:
+          type: string
+        purpose:
+          $ref: '#/components/schemas/PurposeEnum'
+      required:
+      - email
+      - otp
+      - purpose
+    PaginatedAdminCommentListList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdminCommentList'
+    PaginatedAdminProjectListList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdminProjectList'
+    PaginatedAdminTaskAssignmentList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdminTaskAssignment'
+    PaginatedAdminTaskStatusChangeRequestListList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdminTaskStatusChangeRequestList'
+    PaginatedAdminUserListList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdminUserList'
+    PaginatedCommentListList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/CommentList'
+    PaginatedNotificationListList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/NotificationList'
+    PaginatedPaymentList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Payment'
+    PaginatedProjectListList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectList'
+    PaginatedStatusChangeRequestList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/StatusChangeRequest'
+    PaginatedSubscriptionPlanList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubscriptionPlan'
+    PaginatedTaskListList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskList'
+    PasswordResetConfirm:
+      type: object
+      description: Serializer to confirm password reset with a token.
+      properties:
+        reset_token:
+          type: string
+        new_password:
+          type: string
+          writeOnly: true
+          minLength: 8
+      required:
+      - new_password
+      - reset_token
+    PasswordResetRequest:
+      type: object
+      description: Serializer to request a password reset.
+      properties:
+        email:
+          type: string
+          format: email
+      required:
+      - email
+    PatchedAdminCommentCreateUpdate:
+      type: object
+      description: |-
+        Serializer for creating and updating comments, with validation logic for task, parent,
+        and nesting of comments up to a certain depth.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        task:
+          type: integer
+        author:
+          type: integer
+        content:
+          type: string
+          maxLength: 1000
+        parent:
+          type: integer
+          nullable: true
+    PatchedAdminProjectUpdate:
+      type: object
+      description: |-
+        Admin serializer for updating projects with special handling for ownership and membership updates.
+        Allows the assignment of a new owner and manages membership roles accordingly.
+      properties:
+        name:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+          nullable: true
+        due_date:
+          type: string
+          format: date-time
+          nullable: true
+        status:
+          $ref: '#/components/schemas/StatusC03Enum'
+        members:
+          type: array
+          items:
+            type: integer
+        owner:
+          type: integer
+    PatchedAdminSubscriptionDetail:
+      type: object
+      description: |-
+        Serializer for providing detailed information about a user's subscription, including
+        payment history, usage stats, and associated plan details.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          type: integer
+        plan:
+          allOf:
+          - $ref: '#/components/schemas/AdminSubscriptionPlan'
+          readOnly: true
+        start_date:
+          type: string
+          format: date-time
+        end_date:
+          type: string
+          format: date-time
+          nullable: true
+        is_active:
+          type: boolean
+        payment_history:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdminPaymentHistory'
+          readOnly: true
+        usage_stats:
+          type: string
+          readOnly: true
+    PatchedAdminTaskAssignment:
+      type: object
+      description: Serializer for task assignments, used to represent assignment details
+        in the admin interface.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        assigned_at:
+          type: string
+          format: date-time
+          readOnly: true
+        task:
+          type: integer
+        user:
+          type: integer
+    PatchedAdminTaskStatusChangeRequestDetail:
+      type: object
+      description: Serializer for showing detailed information about a specific status
+        change request.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        request_time:
+          type: string
+          format: date-time
+          readOnly: true
+        reason:
+          type: string
+          nullable: true
+        status:
+          $ref: '#/components/schemas/StatusDe3Enum'
+        resolution_time:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        approved_by:
+          type: integer
+        task:
+          type: integer
+        user:
+          type: integer
+    PatchedAdminUserDetail:
+      type: object
+      description: |-
+        Serializer for the User model with a nested Profile serializer.
+        Allows detailed view of the user along with their profile information.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        role:
+          $ref: '#/components/schemas/Role6caEnum'
+        is_staff:
+          type: boolean
+        is_active:
+          type: boolean
+        email_verified:
+          type: boolean
+        pending_email:
+          type: string
+          format: email
+          nullable: true
+          maxLength: 254
+        date_joined:
+          type: string
+          format: date-time
+          readOnly: true
+        last_login:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        last_seen:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        profile:
+          $ref: '#/components/schemas/AdminProfile'
+    PatchedCommentDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        task:
+          type: string
+          readOnly: true
+        project:
+          type: string
+          readOnly: true
+        author:
+          type: integer
+          readOnly: true
+        content:
+          type: string
+          maxLength: 1000
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        mentioned_users:
+          type: array
+          items:
+            type: integer
+          readOnly: true
+        parent:
+          type: integer
+          nullable: true
+        reply_count:
+          type: integer
+          readOnly: true
+        mention_count:
+          type: integer
+          readOnly: true
+        has_replies:
+          type: string
+          readOnly: true
+    PatchedNotificationAdmin:
+      type: object
+      description: Serializer for representing notifications in the admin interface.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        message:
+          type: string
+          description: Content of the notification
+        is_read:
+          type: boolean
+          description: Indicates if the notification has been read
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: Timestamp when notification was created
+        object_id:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          nullable: true
+          description: ID of the related object
+        notification_type:
+          allOf:
+          - $ref: '#/components/schemas/NotificationTypeEnum'
+          description: |-
+            Category of notification (e.g., task, project)
+
+            * `account` - Account Notifications
+            * `project` - Project Notifications
+            * `task` - Task Notifications
+            * `comment` - Comment Mentions
+            * `subscription` - Subscription Updates
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Status77dEnum'
+          description: |-
+            Delivery status of the notification
+
+            * `pending` - Pending
+            * `delivered` - Delivered
+            * `failed` - Failed
+        priority:
+          allOf:
+          - $ref: '#/components/schemas/PriorityEnum'
+          description: |-
+            Priority of the notification
+
+            * `low` - Low
+            * `medium` - Medium
+            * `high` - High
+        retry_count:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        last_attempt_at:
+          type: string
+          format: date-time
+          nullable: true
+        recipient:
+          type: integer
+          description: User who will receive the notification
+        sender:
+          type: integer
+          nullable: true
+          description: User who triggered the notification
+        content_type:
+          type: integer
+          nullable: true
+          description: Type of object this notification refers to
+    PatchedNotificationDetail:
+      type: object
+      description: |-
+        Detailed serializer for Notification model.
+        Includes all fields and related information for a comprehensive view of a notification.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        recipient:
+          allOf:
+          - $ref: '#/components/schemas/UserMinimal'
+          readOnly: true
+        message:
+          type: string
+          description: Content of the notification
+        is_read:
+          type: boolean
+          description: Indicates if the notification has been read
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          description: Timestamp when notification was created
+        notification_type:
+          allOf:
+          - $ref: '#/components/schemas/NotificationTypeEnum'
+          description: |-
+            Category of notification (e.g., task, project)
+
+            * `account` - Account Notifications
+            * `project` - Project Notifications
+            * `task` - Task Notifications
+            * `comment` - Comment Mentions
+            * `subscription` - Subscription Updates
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Status77dEnum'
+          readOnly: true
+          description: |-
+            Delivery status of the notification
+
+            * `pending` - Pending
+            * `delivered` - Delivered
+            * `failed` - Failed
+        priority:
+          allOf:
+          - $ref: '#/components/schemas/PriorityEnum'
+          description: |-
+            Priority of the notification
+
+            * `low` - Low
+            * `medium` - Medium
+            * `high` - High
+        content_type:
+          allOf:
+          - $ref: '#/components/schemas/ContentType'
+          readOnly: true
+        object_id:
+          type: integer
+          readOnly: true
+          nullable: true
+          description: ID of the related object
+    PatchedNotificationPreference:
+      type: object
+      description: |-
+        Serializer for NotificationPreference model.
+        Handles user preferences for different types of notifications.
+      properties:
+        user:
+          type: integer
+          readOnly: true
+          description: User whose notification preferences these are
+        preferences:
+          description: JSON object storing notification preferences
+    PatchedProfile:
+      type: object
+      description: Serializer to handle user profile updates, including nested user
+        updates and email changes.
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+        address:
+          type: string
+          nullable: true
+          maxLength: 255
+        city:
+          type: string
+          nullable: true
+          maxLength: 100
+        country:
+          type: string
+          nullable: true
+          maxLength: 100
+        date_of_birth:
+          type: string
+          format: date
+          nullable: true
+        first_name:
+          type: string
+        last_name:
+          type: string
+        profile_picture:
+          type: string
+          format: uri
+          nullable: true
+        phone_number:
+          type: string
+          nullable: true
+          maxLength: 15
+        pending_email:
+          type: string
+          format: email
+          writeOnly: true
+        owned_projects_count:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        participated_projects_count:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+    PatchedProjectUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+          nullable: true
+        due_date:
+          type: string
+          format: date-time
+          nullable: true
+        status:
+          $ref: '#/components/schemas/StatusC03Enum'
+        members:
+          type: array
+          items:
+            type: integer
+    PatchedStatusChangeRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        task:
+          type: string
+          readOnly: true
+        user:
+          type: integer
+          readOnly: true
+        request_time:
+          type: string
+          format: date-time
+          readOnly: true
+        reason:
+          type: string
+          nullable: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusDe3Enum'
+          readOnly: true
+        approved_by:
+          type: integer
+          readOnly: true
+    PatchedTaskStatusChange:
+      type: object
+      description: |-
+        Serializer to handle the task status update. This serializer only validates
+        the status change for tasks that do not require approval.
+      properties:
+        status:
+          $ref: '#/components/schemas/StatusA33Enum'
+    PatchedTaskUpdate:
+      type: object
+      description: Serializer for updating task details, including managing assignees.
+      properties:
+        name:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+        status:
+          $ref: '#/components/schemas/StatusA33Enum'
+        due_date:
+          type: string
+          format: date-time
+          nullable: true
+        project:
+          type: integer
+          readOnly: true
+        need_approval:
+          type: boolean
+        assignees:
+          type: array
+          items:
+            type: integer
+        assigned_by:
+          type: integer
+          readOnly: true
+        approved_by:
+          type: integer
+          nullable: true
+        total_assignees:
+          type: integer
+          readOnly: true
+    Payment:
+      type: object
+      description: |-
+        Serializer for the Payment model.
+        Handles serialization of payment records for subscriptions.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        subscription:
+          type: integer
+          readOnly: true
+        amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,4}(?:\.\d{0,2})?$
+        date:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - amount
+      - date
+      - id
+      - subscription
+    PriorityEnum:
+      enum:
+      - low
+      - medium
+      - high
+      type: string
+      description: |-
+        * `low` - Low
+        * `medium` - Medium
+        * `high` - High
+    Profile:
+      type: object
+      description: Serializer to handle user profile updates, including nested user
+        updates and email changes.
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+        address:
+          type: string
+          nullable: true
+          maxLength: 255
+        city:
+          type: string
+          nullable: true
+          maxLength: 100
+        country:
+          type: string
+          nullable: true
+          maxLength: 100
+        date_of_birth:
+          type: string
+          format: date
+          nullable: true
+        first_name:
+          type: string
+        last_name:
+          type: string
+        profile_picture:
+          type: string
+          format: uri
+          nullable: true
+        phone_number:
+          type: string
+          nullable: true
+          maxLength: 15
+        pending_email:
+          type: string
+          format: email
+          writeOnly: true
+        owned_projects_count:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        participated_projects_count:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+      required:
+      - user
+    Project:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        total_tasks:
+          type: integer
+          readOnly: true
+        status:
+          $ref: '#/components/schemas/StatusC03Enum'
+        due_date:
+          type: string
+          format: date-time
+          nullable: true
+        total_member_count:
+          type: integer
+          readOnly: true
+        owner:
+          allOf:
+          - $ref: '#/components/schemas/CustomUser'
+          readOnly: true
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectMembership'
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - members
+      - name
+      - owner
+      - total_member_count
+      - total_tasks
+    ProjectCreate:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+          nullable: true
+        due_date:
+          type: string
+          format: date-time
+          nullable: true
+        members:
+          type: array
+          items:
+            type: integer
+            writeOnly: true
+          writeOnly: true
+        status:
+          $ref: '#/components/schemas/StatusC03Enum'
+      required:
+      - name
+    ProjectList:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+          nullable: true
+        status:
+          $ref: '#/components/schemas/StatusC03Enum'
+        due_date:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+      - id
+      - name
+    ProjectMembership:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          type: string
+        joined_at:
+          type: string
+          format: date-time
+        membership_url:
+          type: string
+          readOnly: true
+        role:
+          $ref: '#/components/schemas/ProjectMembershipRoleEnum'
+      required:
+      - id
+      - membership_url
+      - user
+    ProjectMembershipRoleEnum:
+      enum:
+      - owner
+      - member
+      type: string
+      description: |-
+        * `owner` - Owner
+        * `member` - Member
+    ProjectUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+          nullable: true
+        due_date:
+          type: string
+          format: date-time
+          nullable: true
+        status:
+          $ref: '#/components/schemas/StatusC03Enum'
+        members:
+          type: array
+          items:
+            type: integer
+      required:
+      - name
+    PurposeEnum:
+      enum:
+      - REGISTRATION
+      - EMAIL_CHANGE
+      - PASSWORD_RESET
+      type: string
+      description: |-
+        * `REGISTRATION` - REGISTRATION
+        * `EMAIL_CHANGE` - EMAIL_CHANGE
+        * `PASSWORD_RESET` - PASSWORD_RESET
+    Role6caEnum:
+      enum:
+      - admin
+      - user
+      type: string
+      description: |-
+        * `admin` - Admin
+        * `user` - User
+    Status77dEnum:
+      enum:
+      - pending
+      - delivered
+      - failed
+      type: string
+      description: |-
+        * `pending` - Pending
+        * `delivered` - Delivered
+        * `failed` - Failed
+    StatusA33Enum:
+      enum:
+      - not_started
+      - in_progress
+      - completed
+      - overdue
+      type: string
+      description: |-
+        * `not_started` - Not Started
+        * `in_progress` - In Progress
+        * `completed` - Completed
+        * `overdue` - Overdue
+    StatusC03Enum:
+      enum:
+      - not_started
+      - in_progress
+      - completed
+      - on_hold
+      - overdue
+      type: string
+      description: |-
+        * `not_started` - Not Started
+        * `in_progress` - In Progress
+        * `completed` - Completed
+        * `on_hold` - On Hold
+        * `overdue` - Overdue
+    StatusChangeAction:
+      type: object
+      properties:
+        action:
+          $ref: '#/components/schemas/ActionEnum'
+      required:
+      - action
+    StatusChangeRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        task:
+          type: string
+          readOnly: true
+        user:
+          type: integer
+          readOnly: true
+        request_time:
+          type: string
+          format: date-time
+          readOnly: true
+        reason:
+          type: string
+          nullable: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusDe3Enum'
+          readOnly: true
+        approved_by:
+          type: integer
+          readOnly: true
+      required:
+      - approved_by
+      - id
+      - request_time
+      - status
+      - task
+      - user
+    StatusDe3Enum:
+      enum:
+      - pending
+      - approved
+      - rejected
+      type: string
+      description: |-
+        * `pending` - Pending
+        * `approved` - Approved
+        * `rejected` - Rejected
+    Subscription:
+      type: object
+      description: |-
+        Serializer for the Subscription model.
+        Includes details about the plan using a nested SubscriptionPlanSerializer.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          type: integer
+          readOnly: true
+        plan:
+          allOf:
+          - $ref: '#/components/schemas/SubscriptionPlan'
+          readOnly: true
+        start_date:
+          type: string
+          format: date-time
+          readOnly: true
+        end_date:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        is_active:
+          type: boolean
+          readOnly: true
+      required:
+      - end_date
+      - id
+      - is_active
+      - plan
+      - start_date
+      - user
+    SubscriptionPlan:
+      type: object
+      description: |-
+        Serializer for the SubscriptionPlan model.
+        Converts the SubscriptionPlan model instances into JSON and vice versa.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          $ref: '#/components/schemas/NameEnum'
+        description:
+          type: string
+          nullable: true
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,4}(?:\.\d{0,2})?$
+        duration_days:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        max_projects:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -1
+          format: int64
+        max_members_per_project:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: -1
+          format: int64
+      required:
+      - id
+      - max_members_per_project
+      - max_projects
+      - name
+      - price
+    TaskAssignment:
+      type: object
+      description: Optimized serializer for task assignment details.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          type: integer
+          readOnly: true
+        assigned_at:
+          type: string
+          format: date-time
+          readOnly: true
+        membership_url:
+          type: string
+          readOnly: true
+      required:
+      - assigned_at
+      - id
+      - membership_url
+      - user
+    TaskCreate:
+      type: object
+      description: Serializer for creating a new task with optional assignees.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+        status:
+          $ref: '#/components/schemas/StatusA33Enum'
+        due_date:
+          type: string
+          format: date-time
+        total_assignees:
+          type: integer
+          readOnly: true
+        project:
+          type: integer
+        need_approval:
+          type: boolean
+        assignees:
+          type: array
+          items:
+            type: integer
+        approved_by:
+          type: integer
+          readOnly: true
+          nullable: true
+      required:
+      - approved_by
+      - id
+      - name
+      - project
+      - total_assignees
+    TaskDetail:
+      type: object
+      description: Serializer for showing detailed information about a task.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+        status:
+          $ref: '#/components/schemas/StatusA33Enum'
+        due_date:
+          type: string
+          format: date-time
+          nullable: true
+        project:
+          type: integer
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        total_assignees:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        need_approval:
+          type: boolean
+        assigned_by:
+          type: integer
+          readOnly: true
+        approved_by:
+          type: integer
+          readOnly: true
+        assignments_:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskAssignment'
+          readOnly: true
+          title: 'Assignments '
+      required:
+      - approved_by
+      - assigned_by
+      - assignments_
+      - created_at
+      - id
+      - name
+      - project
+      - updated_at
+    TaskList:
+      type: object
+      description: Serializer for listing tasks with minimal information.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        due_date:
+          type: string
+          format: date-time
+          nullable: true
+        status:
+          $ref: '#/components/schemas/StatusA33Enum'
+      required:
+      - id
+      - name
+    TaskUpdate:
+      type: object
+      description: Serializer for updating task details, including managing assignees.
+      properties:
+        name:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+        status:
+          $ref: '#/components/schemas/StatusA33Enum'
+        due_date:
+          type: string
+          format: date-time
+          nullable: true
+        project:
+          type: integer
+          readOnly: true
+        need_approval:
+          type: boolean
+        assignees:
+          type: array
+          items:
+            type: integer
+        assigned_by:
+          type: integer
+          readOnly: true
+        approved_by:
+          type: integer
+          nullable: true
+        total_assignees:
+          type: integer
+          readOnly: true
+      required:
+      - assigned_by
+      - name
+      - project
+      - total_assignees
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          writeOnly: true
+      required:
+      - access
+      - refresh
+    User:
+      type: object
+      description: Serializer to display user details.
+      properties:
+        username:
+          type: string
+          readOnly: true
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+        email:
+          type: string
+          format: email
+          readOnly: true
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email_verified:
+          type: boolean
+        plan:
+          type: string
+          readOnly: true
+      required:
+      - email
+      - plan
+      - username
+    UserLogin:
+      type: object
+      description: Serializer for user login.
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+      required:
+      - password
+      - username
+    UserMinimal:
+      type: object
+      description: Minimal serializer for User model, used for nested representations.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+      required:
+      - id
+      - username
+    UserRegistration:
+      type: object
+      description: Serializer for registering a new user with email verification.
+      properties:
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        password:
+          type: string
+          writeOnly: true
+        password2:
+          type: string
+          writeOnly: true
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+      required:
+      - email
+      - password
+      - password2
+      - username
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+tags:
+- name: Users
+  description: User management endpoints
+- name: Admin
+  description: Administrative endpoints
+- name: Projects
+  description: Project management endpoints
+- name: Tasks
+  description: Task management endpoints
+- name: Subscriptions
+  description: Subscription management endpoints
+- name: Notifications
+  description: Notification management endpoints
